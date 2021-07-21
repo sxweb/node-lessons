@@ -1,35 +1,36 @@
 const http = require('http');
-const fs = require('fs');
-const path = require('path');
 
 const server = http.createServer((req, res) =>{
-    console.log(req.url);
-    res.setHeader('Content-type', 'text/html');
-    /*fs.access(path.join(__dirname, 'logs'), (err) =>{
-        if(err){
-            fs.mkdir(path.join(__dirname, 'logs'), (err) =>{
-                if(err) throw err;
-                console.log('the folder created');
-            });
-        }
-    })
+    if(req.method === 'GET'){
+        res.writeHead(200, {
+            'Content-Type': 'text/html'
+        })
+        res.end(`
+            <h1>Form</h1>
+            <form method="post" action="/">
+                <input name = "title" type="text">
+                <button type="submit">Send</button>
+            </form>
+        `)
+    }else if(req.method === 'POST'){
+        const body = [];
+        res.writeHead(200, {
+            'Content-Type': 'text/html; charset=utf-8'
+        })
+        req.on('data', data =>{
+            body.push(Buffer.from(data))
+        })
+        req.on('end', () =>{
+            const message = body.toString().split('=')[1];
+            res.end(`
+                <h1>Your message is: ${message}</h1>
+            
+            `)
+        })
 
-    fs.writeFile(path.join(__dirname, 'logs', 'request-logs.txt'),
-        req.url,
-        err => {
-            if(err) throw err;
-            console.log('the log wrote');
-        }
-    )*/
-    res.write('hello from Node.js');
-    res.end(`
-        <div style="background: aqua;
-         padding: 20px;
-          width:200px;
-          ">some content in the end</div>
-    `);
-});
+    }
+})
 
-server.listen(3000, () =>{
-    console.log('server id running...');
-});
+server.listen(3000, () => {
+    console.log('Server is running...');
+})
