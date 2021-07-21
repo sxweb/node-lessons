@@ -13,6 +13,17 @@ const server = http.createServer((req, res) =>{
                 break;
             case '/about':
                 render(req, res, 'about.html');
+                break;
+            case '/api/users':
+                res.writeHead(200, {
+                    'Content-Type': 'text/json'
+                })
+                const users = [
+                    {name: 'Yuriy', age: 36},
+                    {name: 'Max', age: 45}
+                ];
+                res.end(JSON.stringify(users));
+
         }
     }else if(req.method === 'POST'){
         const body = [];
